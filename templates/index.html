@@ -3,100 +3,96 @@
 {% block title %}Career Prediction – Home{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-  <div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-      <h2 class="mb-0">Career Prediction System</h2>
+<div class="px-4 py-8 max-w-4xl mx-auto">
+  <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+    <div class="bg-primary text-white px-6 py-4">
+      <h2 class="text-2xl font-semibold">Career Prediction System</h2>
     </div>
-    <div class="card-body">
-      <p class="lead text-center mb-4">
+    <div class="p-6">
+      <p class="text-center text-lg mb-6">
         Discover your ideal career path based on your skills and personality traits.
       </p>
 
       <form id="predictionForm" method="POST" action="{{ url_for('predict') }}">
-        <div class="row gx-4 gy-4">
-          <!-- Technical Skills: 3 per row on md+, full width on xs -->
-          <div class="col-12">
-            <fieldset class="border rounded-3 p-3">
-              <legend class="w-auto px-2 text-primary">Technical Skills</legend>
-              <div class="row gy-4">
-                {% for key, label in technical_skills %}
-                  <div class="col-12 col-md-4">
-                    <label for="{{ key }}" class="form-label">{{ label }}</label>
-                    <div class="d-flex align-items-center">
-                      <span class="me-2">1</span>
-                      <input
-                        type="range"
-                        id="{{ key }}"
-                        name="{{ key }}"
-                        min="1" max="7" value="4" step="1"
-                        class="form-range flex-grow-1"
-                        oninput="updateSliderValue('{{ key }}', this.value)"
-                        required>
-                      <span class="ms-2">7</span>
-                    </div>
-                    <div class="text-center mt-1">
-                      <span class="badge bg-secondary" id="{{ key }}_value">4</span>
-                    </div>
-                  </div>
-                {% endfor %}
+        <!-- TECHNICAL SKILLS -->
+        <fieldset class="mb-8 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+          <legend class="px-2 text-primary dark:text-accent font-medium">Technical Skills</legend>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
+            {% for key, label in technical_skills %}
+              <div>
+                <label for="{{ key }}" class="block text-sm font-medium mb-1">{{ label }}</label>
+                <div class="flex items-center">
+                  <span class="text-sm mr-2">1</span>
+                  <input
+                    type="range"
+                    id="{{ key }}"
+                    name="{{ key }}"
+                    min="1" max="7" value="4" step="1"
+                    class="flex-1"
+                    oninput="updateSliderValue('{{ key }}', this.value)"
+                    required>
+                  <span class="text-sm ml-2">7</span>
+                </div>
+                <div class="text-center mt-1">
+                  <span
+                    id="{{ key }}_value"
+                    class="inline-block bg-secondary dark:bg-gray-600 text-white text-xs font-medium px-2 py-1 rounded">
+                    4
+                  </span>
+                </div>
               </div>
-            </fieldset>
+            {% endfor %}
           </div>
+        </fieldset>
 
-          <!-- Personality Traits: 3 per row on md+, full width on xs -->
-          <div class="col-12">
-            <fieldset class="border rounded-3 p-3">
-              <legend class="w-auto px-2 text-primary">Personality Traits</legend>
-              <div class="row gy-4">
-                {% for key, label in personality_traits %}
-                  <div class="col-12 col-md-4">
-                    <label for="{{ key }}" class="form-label">{{ label }}</label>
-                    <div class="d-flex align-items-center">
-                      <span class="me-2">0</span>
-                      <input
-                        type="range"
-                        id="{{ key }}"
-                        name="{{ key }}"
-                        min="0" max="1" value="0.5" step="0.1"
-                        class="form-range flex-grow-1"
-                        oninput="updateSliderValue('{{ key }}', this.value)"
-                        required>
-                      <span class="ms-2">1</span>
-                    </div>
-                    <div class="text-center mt-1">
-                      <span class="badge bg-secondary" id="{{ key }}_value">0.5</span>
-                    </div>
-                  </div>
-                {% endfor %}
+        <!-- PERSONALITY TRAITS -->
+        <fieldset class="mb-8 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+          <legend class="px-2 text-primary dark:text-accent font-medium">Personality Traits</legend>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
+            {% for key, label in personality_traits %}
+              <div>
+                <label for="{{ key }}" class="block text-sm font-medium mb-1">{{ label }}</label>
+                <div class="flex items-center">
+                  <span class="text-sm mr-2">0</span>
+                  <input
+                    type="range"
+                    id="{{ key }}"
+                    name="{{ key }}"
+                    min="0" max="1" value="0.5" step="0.1"
+                    class="flex-1"
+                    oninput="updateSliderValue('{{ key }}', this.value)"
+                    required>
+                  <span class="text-sm ml-2">1</span>
+                </div>
+                <div class="text-center mt-1">
+                  <span
+                    id="{{ key }}_value"
+                    class="inline-block bg-secondary dark:bg-gray-600 text-white text-xs font-medium px-2 py-1 rounded">
+                    0.5
+                  </span>
+                </div>
               </div>
-            </fieldset>
+            {% endfor %}
           </div>
+        </fieldset>
 
-          <!-- Submit Button -->
-          <div class="col-12 text-center">
-            <button type="submit" class="btn btn-primary btn-lg px-5" id="predictButton">
-              <span class="spinner-border spinner-border-sm me-2 d-none" id="loadingSpinner"></span>
-              Predict My Career
-            </button>
-          </div>
+        <!-- SUBMIT BUTTON -->
+        <div class="text-center">
+          <button
+            type="submit"
+            id="predictButton"
+            class="inline-flex items-center bg-primary hover:opacity-90 text-white font-semibold px-6 py-2 rounded shadow transition duration-200">
+            <svg id="loadingSpinner" class="animate-spin h-5 w-5 mr-2 hidden" xmlns="http://www.w3.org/2000/svg" fill="none"
+                 viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+            <span>Predict My Career</span>
+          </button>
         </div>
       </form>
     </div>
   </div>
 </div>
-
-<script>
-  function updateSliderValue(key, value) {
-    document.getElementById(key + '_value').textContent = value;
-  }
-
-  document.getElementById('predictionForm').addEventListener('submit', function() {
-    const btn = document.getElementById('predictButton');
-    const spinner = document.getElementById('loadingSpinner');
-    btn.disabled = true;
-    spinner.classList.remove('d-none');
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Predicting...';
-  });
-</script>
 {% endblock %}

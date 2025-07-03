@@ -24,6 +24,7 @@
   </script>
 
   {% block head %}
+    <!-- your own styles if needed -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   {% endblock %}
 </head>
@@ -116,18 +117,15 @@
   </footer>
 
   {% block scripts %}
+    <!-- Mobile menu toggle + theme toggle (already here) -->
     <script>
-      // Mobile menu toggle
       document.getElementById('mobile-menu-btn').addEventListener('click', () => {
         document.getElementById('mobile-menu').classList.toggle('hidden');
       });
-
-      // Theme toggle
       const htmlEl = document.documentElement;
       const lightIcon = document.getElementById('icon-light');
-      const darkIcon = document.getElementById('icon-dark');
+      const darkIcon  = document.getElementById('icon-dark');
       const storedTheme = localStorage.getItem('theme');
-
       function showThemeIcon() {
         if (htmlEl.classList.contains('dark')) {
           darkIcon.classList.remove('hidden');
@@ -137,21 +135,21 @@
           darkIcon.classList.add('hidden');
         }
       }
-
       (function initTheme(){
-        if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        if (storedTheme==='dark'||(!storedTheme&&window.matchMedia('(prefers-color-scheme: dark)').matches)) {
           htmlEl.classList.add('dark');
         }
         showThemeIcon();
       })();
-
-      document.getElementById('toggle-theme').addEventListener('click', () => {
+      document.getElementById('toggle-theme').addEventListener('click', ()=>{
         htmlEl.classList.toggle('dark');
-        const theme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
-        localStorage.setItem('theme', theme);
+        localStorage.setItem('theme', htmlEl.classList.contains('dark')?'dark':'light');
         showThemeIcon();
       });
     </script>
+
+    <!-- --------------- YOUR SLIDER & SPINNER LOGIC --------------- -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
   {% endblock %}
 
 </body>

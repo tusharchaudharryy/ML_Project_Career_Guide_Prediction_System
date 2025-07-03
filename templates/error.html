@@ -3,7 +3,7 @@
 {% block title %}Error – CareerPredict{% endblock %}
 
 {% block content %}
-<div class="flex justify-center items-center py-12">
+<div class="flex justify-center items-center py-12 px-4">
   <div class="w-full max-w-md">
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
       <div class="bg-red-600 text-white p-4">
@@ -11,8 +11,14 @@
       </div>
       <div class="p-6 text-center">
         <div class="mb-6">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          <svg xmlns="http://www.w3.org/2000/svg"
+               class="h-16 w-16 mx-auto text-red-600"
+               fill="none"
+               viewBox="0 0 24 24"
+               stroke="currentColor">
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
                   d="M12 9v2m0 4h.01M4.93 4.93l14.14 14.14m0-14.14L4.93 19.07"/>
           </svg>
         </div>
@@ -21,7 +27,7 @@
           {{ error or "An unexpected error occurred. Please try again later." }}
         </p>
         <a href="{{ url_for('index') }}"
-           class="inline-block bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+           class="inline-block bg-primary hover:opacity-90 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
           Go Back Home
         </a>
       </div>

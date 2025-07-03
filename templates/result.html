@@ -3,7 +3,7 @@
 {% block title %}Career Prediction – Results{% endblock %}
 
 {% block content %}
-<main class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+<main class="px-4 py-8 max-w-4xl mx-auto space-y-8">
   <!-- Results Card -->
   <section class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
     <div class="bg-green-600 dark:bg-green-500 text-white px-6 py-4">
@@ -70,7 +70,7 @@
                   <span class="text-gray-700 dark:text-gray-300 text-sm">{{ alt.probability }}%</span>
                 </td>
                 <td class="px-4 py-2">
-                  <span class="inline-block bg-info dark:bg-secondary text-white text-sm px-2 py-1 rounded">
+                  <span class="inline-block bg-secondary dark:bg-accent text-white text-sm px-2 py-1 rounded">
                     {{ alt.confidence_level }}
                   </span>
                 </td>
@@ -86,11 +86,11 @@
       <div class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
         <div class="space-x-4">
           <a href="{{ url_for('index') }}"
-             class="inline-block bg-primary hover:bg-primary-dark text-white font-medium px-5 py-2 rounded-lg transition-colors duration-200">
+             class="inline-block bg-primary hover:opacity-90 text-white font-medium px-5 py-2 rounded-lg transition duration-200">
             Try Again
           </a>
           <button onclick="window.print()"
-                  class="inline-block bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium px-5 py-2 rounded-lg transition-colors duration-200">
+                  class="inline-block bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium px-5 py-2 rounded-lg transition duration-200">
             Print Results
           </button>
         </div>

@@ -1,3 +1,5 @@
+// static/js/script.js
+
 document.addEventListener('DOMContentLoaded', () => {
   initSliders();
   initForm();
@@ -35,14 +37,14 @@ function styleBadge(el, value, trait) {
 
   // Determine thresholds from data attributes or defaults
   const thresholds = trait === 'tech'
-    ? [2, 4, 6]  // technical: low, medium, high
-    : [0.3, 0.6]; // traits: low, medium
+    ? [2, 4, 6]    // technical: low, medium, high
+    : [0.3, 0.6];  // traits: low, medium
 
   if (trait === 'tech') {
-    if (value <= thresholds[0]) el.style.background = 'var(--color-warning)';
-    else if (value <= thresholds[1]) el.style.background = 'var(--color-accent)';
-    else if (value <= thresholds[2]) el.style.background = 'var(--color-primary)';
-    else el.style.background = 'var(--color-success)';
+    if (value <= thresholds[0]) el.style.background = 'var(--color-accent)';       // low
+    else if (value <= thresholds[1]) el.style.background = 'var(--color-primary)';  // medium
+    else if (value <= thresholds[2]) el.style.background = 'var(--color-success)';  // high
+    else el.style.background = 'var(--color-success)';                               // max
   } else {
     if (value <= thresholds[0]) el.style.background = 'rgba(255,255,255,0.2)';
     else if (value <= thresholds[1]) el.style.background = 'var(--color-accent)';
@@ -56,17 +58,19 @@ function styleBadge(el, value, trait) {
 function initForm() {
   const form = document.getElementById('predictionForm');
   if (!form) return;
+
   form.addEventListener('submit', e => {
+    if (!validateForm()) {
+      e.preventDefault();
+      return;
+    }
+
     const btn = document.getElementById('predictButton');
     const spinner = document.getElementById('loadingSpinner');
     if (btn && spinner) {
       btn.disabled = true;
-      spinner.classList.remove('d-none');
-      btn.textContent = 'Predicting...';
-      if (!validateForm()) {
-        e.preventDefault();
-        resetButton(btn, spinner);
-      }
+      spinner.style.display = 'inline-block';
+      btn.querySelector('span:last-child').textContent = ' Predicting...';
     }
   });
 }
@@ -77,50 +81,37 @@ function initForm() {
 function validateForm() {
   let valid = true;
   document.querySelectorAll('input[required]').forEach(input => {
-    if (!input.value.trim()) {
-      input.classList.add('is-invalid');
+    if (!input.value) {
+      input.classList.add('border-red-500');
       valid = false;
-    } else input.classList.remove('is-invalid');
+    } else {
+      input.classList.remove('border-red-500');
+    }
   });
   if (!valid) showAlert('Fill all required fields!', 'error');
   return valid;
 }
 
 /**
- * Reset submit button state
- */
-function resetButton(btn, spinner) {
-  btn.disabled = false;
-  btn.textContent = 'Predict My Career';
-  spinner.classList.add('d-none');
-}
-
-/**
  * Display alert messages dynamically
  */
-function showAlert(msg, type='info') {
+function showAlert(msg, type = 'info') {
   const wrapper = document.createElement('div');
-  wrapper.className = `alert alert-${type==='error'?'danger':type} show`;
+  wrapper.className = `mb-4 p-4 rounded shadow text-white ${type === 'error' ? 'bg-red-600' : 'bg-blue-600'}`;
   wrapper.textContent = msg;
   const container = document.querySelector('.container');
-  container.insertBefore(wrapper, container.firstChild);
+  container.prepend(wrapper);
   setTimeout(() => wrapper.remove(), 5000);
-}
-
-/**
- * Smooth scroll utility
- */
-function smoothScrollTo(id) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 }
 
 /**
  * Theme toggle (light/dark) button initializer
  */
 function initThemeToggle() {
-  const toggle = document.getElementById('themeToggle');
+  const toggle = document.getElementById('toggle-theme');
   if (!toggle) return;
+
   toggle.addEventListener('click', () => {
-    document.body.classList.toggle('light-mode');
+    document.body.classList.toggle('light');
   });
 }
