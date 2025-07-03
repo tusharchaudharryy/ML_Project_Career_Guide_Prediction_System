@@ -1,98 +1,102 @@
 {% extends "base.html" %}
 
-{% block title %}Career Prediction - Results{% endblock %}
+{% block title %}Career Prediction – Results{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-10">
-        <div class="card shadow">
-            <div class="card-header bg-success text-white">
-                <h2 class="mb-0">Your Career Prediction Results</h2>
-            </div>
-            <div class="card-body">
-                <!-- Primary Prediction -->
-                <div class="alert alert-success" role="alert">
-                    <h4 class="alert-heading">Recommended Career Path</h4>
-                    <h2 class="text-success">{{ prediction.primary_career }}</h2>
-                    <hr>
-                    <p class="mb-0">
-                        <strong>Confidence:</strong> {{ prediction.confidence_percentage }}% 
-                        <span class="badge bg-success">{{ prediction.confidence_level }}</span>
-                    </p>
-                </div>
-
-                <!-- Top Matches -->
-                {% if prediction.top_matches %}
-                <div class="mb-4">
-                    <h4 class="text-primary">Top Career Matches</h4>
-                    <div class="row">
-                        {% for match in prediction.top_matches %}
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body text-center">
-                                    <h5 class="card-title">{{ match.career }}</h5>
-                                    <div class="progress mb-2">
-                                        <div class="progress-bar" style="width: {{ match.probability }}%"></div>
-                                    </div>
-                                    <p class="card-text">
-                                        {{ match.probability }}% 
-                                        <span class="badge bg-primary">{{ match.confidence_level }}</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
-
-                <!-- Alternative Careers -->
-                {% if prediction.alternative_careers %}
-                <div class="mb-4">
-                    <h4 class="text-primary">Alternative Career Options</h4>
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Career</th>
-                                    <th>Match Probability</th>
-                                    <th>Confidence Level</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for career in prediction.alternative_careers %}
-                                <tr>
-                                    <td>{{ career.career }}</td>
-                                    <td>
-                                        <div class="progress" style="height: 20px;">
-                                            <div class="progress-bar" style="width: {{ career.probability }}%">
-                                                {{ career.probability }}%
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-info">{{ career.confidence_level }}</span>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                {% endif %}
-
-                <!-- Action Buttons -->
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a href="{{ url_for('index') }}" class="btn btn-primary">Try Again</a>
-                    <button onclick="window.print()" class="btn btn-outline-secondary">Print Results</button>
-                </div>
-
-                <!-- Timestamp -->
-                <div class="text-muted mt-3">
-                    <small>Prediction generated on: {{ prediction.timestamp }}</small>
-                </div>
-            </div>
-        </div>
+<main class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+  <!-- Results Card -->
+  <section class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+    <div class="bg-green-600 dark:bg-green-500 text-white px-6 py-4">
+      <h2 class="text-2xl font-semibold">Your Career Prediction Results</h2>
     </div>
-</div>
+    <div class="p-6 space-y-6">
+      <!-- Primary Recommendation -->
+      <div class="bg-green-50 dark:bg-gray-700 border-l-4 border-green-600 dark:border-green-500 p-4 rounded">
+        <h3 class="text-lg font-medium text-green-800 dark:text-green-200 mb-2">Recommended Career Path</h3>
+        <p class="text-3xl font-bold text-green-700 dark:text-green-300 mb-2">{{ prediction.primary_career }}</p>
+        <p class="text-gray-700 dark:text-gray-300">
+          <span class="font-semibold">Confidence:</span>
+          <span class="text-green-700 dark:text-green-300">{{ prediction.confidence_percentage }}%</span>
+          <span class="inline-block bg-green-600 dark:bg-green-500 text-white text-sm px-2 py-1 rounded ml-2">
+            {{ prediction.confidence_level }}
+          </span>
+        </p>
+      </div>
+
+      <!-- Top Matches -->
+      {% if prediction.top_matches %}
+      <div class="space-y-4">
+        <h3 class="text-xl font-semibold text-primary dark:text-white">Top Career Matches</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for match in prediction.top_matches %}
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex flex-col items-center">
+            <h4 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">{{ match.career }}</h4>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mb-2">
+              <div class="bg-primary h-4 rounded-full" style="width: {{ match.probability }}%"></div>
+            </div>
+            <p class="text-gray-700 dark:text-gray-300">
+              {{ match.probability }}%
+              <span class="inline-block bg-primary dark:bg-secondary text-white text-xs px-2 py-1 rounded ml-2">
+                {{ match.confidence_level }}
+              </span>
+            </p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Alternative Careers Table -->
+      {% if prediction.alternative_careers %}
+      <div class="space-y-4">
+        <h3 class="text-xl font-semibold text-primary dark:text-white">Alternative Career Options</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-x-auto">
+          <table class="min-w-full text-left">
+            <thead class="bg-gray-100 dark:bg-gray-700">
+              <tr>
+                <th class="px-4 py-2 text-gray-700 dark:text-gray-200">Career</th>
+                <th class="px-4 py-2 text-gray-700 dark:text-gray-200">Match Probability</th>
+                <th class="px-4 py-2 text-gray-700 dark:text-gray-200">Confidence Level</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for alt in prediction.alternative_careers %}
+              <tr class="border-t border-gray-200 dark:border-gray-700">
+                <td class="px-4 py-2 text-gray-800 dark:text-gray-100">{{ alt.career }}</td>
+                <td class="px-4 py-2">
+                  <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mb-1">
+                    <div class="bg-primary h-4 rounded-full" style="width: {{ alt.probability }}%"></div>
+                  </div>
+                  <span class="text-gray-700 dark:text-gray-300 text-sm">{{ alt.probability }}%</span>
+                </td>
+                <td class="px-4 py-2">
+                  <span class="inline-block bg-info dark:bg-secondary text-white text-sm px-2 py-1 rounded">
+                    {{ alt.confidence_level }}
+                  </span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Actions & Timestamp -->
+      <div class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
+        <div class="space-x-4">
+          <a href="{{ url_for('index') }}"
+             class="inline-block bg-primary hover:bg-primary-dark text-white font-medium px-5 py-2 rounded-lg transition-colors duration-200">
+            Try Again
+          </a>
+          <button onclick="window.print()"
+                  class="inline-block bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium px-5 py-2 rounded-lg transition-colors duration-200">
+            Print Results
+          </button>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Generated on: {{ prediction.timestamp }}</p>
+      </div>
+    </div>
+  </section>
+</main>
 {% endblock %}
