@@ -1,119 +1,199 @@
-/* Career Prediction System Styles */
+:root {
+    /* Color Palette */
+    --color-bg-light: #f8f9fa;
+    --color-bg-dark: #121212;
+    --color-card-bg: rgba(255, 255, 255, 0.1);
+    --color-card-border: rgba(255, 255, 255, 0.2);
+    --color-accent: #00d1ff;
+    --color-primary: #1e90ff;
+    --color-success: #28a745;
+    --color-text-light: #ffffff;
+    --color-text-dark: #212529;
+    --transition-fast: 0.3s ease;
+}
+
+/* Dark / Light Mode based on user preference */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #000;
+        color: var(--color-text-light);
+    }
+}
+@media (prefers-color-scheme: light) {
+    body {
+        background: var(--color-bg-light);
+        color: var(--color-text-dark);
+    }
+}
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    animation: gradient-bg 15s infinite;
+    background: linear-gradient(45deg, #1e3c72, #2a5298, #1e3c72, #2a5298);
+    background-size: 600% 600%;
+    transition: background var(--transition-fast);
 }
 
+/* Moving Gradient Background */
+@keyframes gradient-bg {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Glassmorphic Card Style */
 .card {
-    border: none;
-    border-radius: 10px;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-card-border);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
 }
 
 .card-header {
-    border-radius: 10px 10px 0 0 !important;
+    background: transparent !important;
+    border-bottom: 1px solid var(--color-card-border) !important;
+    padding: 1rem;
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+.card-body {
+    padding: 1.5rem;
 }
 
 .skill-group, .trait-group {
-    background-color: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
+    background: var(--color-card-bg);
+    padding: 20px;
+    border: 1px solid var(--color-card-border);
+    border-radius: 12px;
+    margin-bottom: 20px;
 }
 
 .form-range {
-    margin: 0 10px;
+    width: calc(100% - 20px);
+    margin: 10px;
 }
 
-.form-range::-webkit-slider-thumb {
-    background: #007bff;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-}
-
+.form-range::-webkit-slider-thumb,
 .form-range::-moz-range-thumb {
-    background: #007bff;
+    background: var(--color-accent);
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    border: none;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+}
+
+.form-range::-webkit-slider-thumb:hover,
+.form-range::-moz-range-thumb:hover {
+    transform: scale(1.2);
 }
 
 .badge {
-    font-size: 0.9rem;
-    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.7rem;
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 0.5rem;
 }
 
 .progress {
-    height: 8px;
-    border-radius: 4px;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .progress-bar {
-    background: linear-gradient(45deg, #007bff, #28a745);
-    border-radius: 4px;
+    background: linear-gradient(45deg, var(--color-primary), var(--color-success));
+    border-radius: 5px;
 }
 
 .alert-success {
-    background: linear-gradient(135deg, #d4edda, #c3e6cb);
-    border: 1px solid #b3d4fc;
+    background: linear-gradient(135deg, #2f855a, #38a169);
+    color: #e6fffa;
+    border: none;
+    border-radius: 8px;
 }
 
 .btn-primary {
-    background: linear-gradient(45deg, #007bff, #0056b3);
+    background: var(--color-primary);
     border: none;
-    transition: all 0.3s ease;
+    border-radius: 8px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(45deg, #0056b3, #004085);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    background: var(--color-success);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.navbar {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .navbar-brand {
-    font-weight: bold;
-    font-size: 1.5rem;
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--color-text-light) !important;
 }
 
 footer {
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
     margin-top: auto;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .skill-group, .trait-group {
-        margin-bottom: 10px;
-    }
-    
-    .card-body {
         padding: 15px;
     }
-    
+    .card-body {
+        padding: 1rem;
+    }
     .btn-lg {
-        padding: 12px 20px;
+        padding: 1rem 1.8rem;
         font-size: 1.1rem;
     }
 }
 
-/* Animation for loading */
+/* Loading Animation */
 @keyframes pulse {
     0% { opacity: 1; }
-    50% { opacity: 0.5; }
+    50% { opacity: 0.6; }
     100% { opacity: 1; }
 }
 
 .loading {
-    animation: pulse 1.5s ease-in-out infinite;
+    animation: pulse 1.2s ease-in-out infinite;
 }
 
-/* Print styles */
+/* Print Styles */
 @media print {
     .btn, .navbar, footer {
         display: none !important;
     }
-    
     .card {
         box-shadow: none !important;
         border: 1px solid #000 !important;

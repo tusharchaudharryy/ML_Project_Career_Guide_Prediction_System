@@ -10,6 +10,8 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.metrics import classification_report, confusion_matrix
 import joblib
 import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.config import TECHNICAL_SKILLS, PERSONALITY_TRAITS, CAREER_CATEGORIES, MODEL_PATH
 from src.logging_config import get_logger

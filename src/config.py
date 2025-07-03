@@ -1,17 +1,13 @@
-"""
-Configuration file for Career Prediction System
-Contains all constants and feature definitions
-"""
-
 import os
 from pathlib import Path
 
-# Base directory
-BASE_DIR = Path(__file__).parent.absolute()
+# Base directory - point to project root
+BASE_DIR = Path(__file__).parent.parent.absolute()
 
 # Model configuration
 MODEL_PATH = os.path.join(BASE_DIR, 'models', 'career_model.pkl')
 DATA_PATH = os.path.join(BASE_DIR, 'data', 'career_data.csv')
+
 
 # Technical Skills (consistent naming)
 TECHNICAL_SKILLS = [

@@ -1,9 +1,7 @@
-"""
-Career Prediction Model Handler
-Handles model loading, validation, and prediction
-"""
-
 import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import joblib
 import numpy as np
 from datetime import datetime
