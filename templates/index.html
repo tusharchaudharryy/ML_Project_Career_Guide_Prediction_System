@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Career Prediction - Home{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Career Prediction System</h2>
+            </div>
+            <div class="card-body">
+                <p class="lead">Discover your ideal career path based on your skills and personality traits.</p>
+                
+                <form method="POST" action="{{ url_for('predict') }}" id="predictionForm">
+                    <!-- Technical Skills Section -->
+                    <div class="mb-4">
+                        <h4 class="text-primary">Technical Skills</h4>
+                        <p class="text-muted">Rate your proficiency in each technical area (1 = Beginner, 7 = Expert)</p>
+                        
+                        <div class="row">
+                            {% for skill_key, skill_name in technical_skills %}
+                            <div class="col-md-6 mb-3">
+                                <div class="skill-group">
+                                    <label for="{{ skill_key }}" class="form-label">{{ skill_name }}</label>
+                                    <div class="d-flex align-items-center">
+                                        <span class="me-2">1</span>
+                                        <input type="range" 
+                                               id="{{ skill_key }}" 
+                                               name="{{ skill_key }}" 
+                                               min="1" 
+                                               max="7" 
+                                               value="4" 
+                                               step="1"
+                                               class="form-range flex-grow-1"
+                                               oninput="updateSliderValue('{{ skill_key }}', this.value)"
+                                               required>
+                                        <span class="ms-2">7</span>
+                                    </div>
+                                    <div class="text-center mt-1">
+                                        <span class="badge bg-secondary" id="{{ skill_key }}_value">4</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Personality Traits Section -->
+                    <div class="mb-4">
+                        <h4 class="text-primary">Personality Traits</h4>
+                        <p class="text-muted">Rate how well each trait describes you (0 = Not at all, 1 = Completely)</p>
+                        
+                        <div class="row">
+                            {% for trait_key, trait_name in personality_traits %}
+                            <div class="col-md-6 mb-3">
+                                <div class="trait-group">
+                                    <label for="{{ trait_key }}" class="form-label">{{ trait_name }}</label>
+                                    <div class="d-flex align-items-center">
+                                        <span class="me-2">0</span>
+                                        <input type="range" 
+                                               id="{{ trait_key }}" 
+                                               name="{{ trait_key }}" 
+                                               min="0" 
+                                               max="1" 
+                                               value="0.5" 
+                                               step="0.1"
+                                               class="form-range flex-grow-1"
+                                               oninput="updateSliderValue('{{ trait_key }}', this.value)"
+                                               required>
+                                        <span class="ms-2">1</span>
+                                    </div>
+                                    <div class="text-center mt-1">
+                                        <span class="badge bg-secondary" id="{{ trait_key }}_value">0.5</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg" id="predictButton">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" id="loadingSpinner"></span>
+                            Predict My Career
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateSliderValue(skillKey, value) {
+    document.getElementById(skillKey + '_value').textContent = value;
+}
+
+// Form submission handling
+document.getElementById('predictionForm').addEventListener('submit', function(e) {
+    const button = document.getElementById('predictButton');
+    const spinner = document.getElementById('loadingSpinner');
+    
+    button.disabled = true;
+    spinner.classList.remove('d-none');
+    button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Predicting...';
+});
+</script>
+{% endblock %}
