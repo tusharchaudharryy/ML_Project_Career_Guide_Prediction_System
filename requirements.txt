@@ -23,3 +23,7 @@ python-dotenv==1.0.0
 # Development & Testing
 pytest==7.4.0
 pytest-cov==4.1.0
+xgboost 
+lightgbm 
+catboost 
+joblib

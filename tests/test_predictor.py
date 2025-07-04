@@ -9,8 +9,8 @@ from src.predictor import CareerPredictor
 from unittest.mock import patch, MagicMock
 from unittest.mock import patch
 
-from predictor import CareerPredictor
-from config import TECHNICAL_SKILLS, PERSONALITY_TRAITS
+from src.predictor import CareerPredictor
+from src.config import TECHNICAL_SKILLS, PERSONALITY_TRAITS
 
 
 class TestCareerPredictor(unittest.TestCase):
