@@ -1,12 +1,3 @@
-
-
-"""
-Enhanced trainer that tries many classification algorithms, evaluates them
-with cross-validation, tunes the best few, and finally trains + saves the best
-model.  All logging is handled through `src.logging_config.get_logger`.
-
-"""
-
 import os
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -70,6 +61,7 @@ warnings.filterwarnings("ignore", category=ConvergenceWarning)
 
 logger = get_logger("enhanced_model_training")
 
+
 class EnhancedModelTrainer:
     """
     Train, compare & autotune multiple ML algorithms for the career-prediction
@@ -106,7 +98,7 @@ class EnhancedModelTrainer:
         return df
 
     def _prepare_xy(self, df: pd.DataFrame):
-        # Normalise technical skills to 0-1
+        # Normalize technical skills to 0-1
         for skill, _ in TECHNICAL_SKILLS:
             df[skill] = df[skill] / 7.0
         X = df[self.feature_names].values
@@ -233,16 +225,13 @@ class EnhancedModelTrainer:
         zoo = self._model_zoo()
         logger.info(f"Evaluating {len(zoo)} models …")
         for name, (est, _) in zoo.items():
-            pipe = Pipeline(
-                steps=[("scaler", self.scaler), ("classifier", est)]
-            )
+            pipe = Pipeline(steps=[("scaler", self.scaler), ("classifier", est)])
             cv_scores = cross_val_score(
                 pipe, X, y, cv=self.cv, scoring="accuracy", n_jobs=-1
             )
             self.results_[name] = (cv_scores.mean(), cv_scores.std())
             logger.info(
-                f"{name:12s} | "
-                f"acc = {cv_scores.mean():.4f} ± {cv_scores.std():.4f}"
+                f"{name:12s} | acc = {cv_scores.mean():.4f} ± {cv_scores.std():.4f}"
             )
         return self.results_
 
@@ -263,21 +252,22 @@ class EnhancedModelTrainer:
         for name, _ in ranked:
             est, grid = self._model_zoo()[name]
             pipe = Pipeline([("scaler", self.scaler), ("classifier", est)])
-            if grid is None or len(grid) == 0:
+            if not grid:
                 logger.info(f"No hyperparameters for {name}, skipping tune")
                 tuned_pipe = pipe
             else:
+                total_params = sum(len(v) for v in grid.values())
                 search_cv = (
                     RandomizedSearchCV(
                         pipe,
                         grid,
-                        n_iter=min(n_iter, sum(len(v) for v in grid.values())),
+                        n_iter=min(n_iter, total_params),
                         scoring="accuracy",
                         cv=self.cv,
                         n_jobs=-1,
                         random_state=self.random_state,
                     )
-                    if sum(len(v) for v in grid.values()) > 20
+                    if total_params > 20
                     else GridSearchCV(
                         pipe,
                         grid,
@@ -288,23 +278,16 @@ class EnhancedModelTrainer:
                 )
                 search_cv.fit(X, y)
                 tuned_pipe = search_cv.best_estimator_
-                logger.info(
-                    f"{name} tuned acc = {search_cv.best_score_:.4f}"
-                )
+                logger.info(f"{name} tuned acc = {search_cv.best_score_:.4f}")
             tuned_scores = cross_val_score(
                 tuned_pipe, X, y, cv=self.cv, scoring="accuracy", n_jobs=-1
             )
             mean_acc = tuned_scores.mean()
             std_acc = tuned_scores.std()
-            logger.info(
-                f"{name:12s} | tuned acc = {mean_acc:.4f} ± {std_acc:.4f}"
-            )
+            logger.info(f"{name:12s} | tuned acc = {mean_acc:.4f} ± {std_acc:.4f}")
             if mean_acc > best_score:
                 best_score, best_pipe, best_name = mean_acc, tuned_pipe, name
-        logger.info(
-            f"Selected best model ➜ {best_name} "
-            f"({best_score:.4f} CV accuracy)"
-        )
+        logger.info(f"Selected best model ➜ {best_name} ({best_score:.4f} CV accuracy)")
         self.best_model = best_pipe
         return best_name, best_score
 
@@ -315,15 +298,16 @@ class EnhancedModelTrainer:
         self.best_model.fit(X, y)
 
     def save(self, path: str = MODEL_PATH):
-        """Persist best model + label encoder to joblib file."""
+        """Persist best model + label encoder + target classes to joblib file."""
         if self.best_model is None:
             raise RuntimeError("Model not trained yet")
         os.makedirs(os.path.dirname(path), exist_ok=True)
         joblib.dump(
             {
                 "model": self.best_model,
-                "label_encoder": self.label_enc,
                 "feature_names": self.feature_names,
+                "target_classes": self.label_enc.classes_,  # actual class names
+                "label_encoder": self.label_enc,           # for inverse transform
             },
             path,
         )
@@ -345,7 +329,6 @@ class EnhancedModelTrainer:
         y_pred = self.best_model.predict(X_test)
         acc = accuracy_score(y_test, y_pred)
         logger.info(f"Hold-out accuracy = {acc:.4f}")
-        # Use zero_division=0 to suppress warnings
         class_report = classification_report(y_test, y_pred, zero_division=0)
         logger.info("\n" + class_report)
         logger.info("\nConfusion matrix:\n%s", confusion_matrix(y_test, y_pred))
@@ -356,10 +339,10 @@ class EnhancedModelTrainer:
             "cv_results": self.results_,
         }
 
+
 if __name__ == "__main__":
     trainer = EnhancedModelTrainer(cv_folds=5, random_state=42)
     metrics = trainer.train_pipeline()
     print("\n==== FINAL RESULTS ====")
     print(f"Hold-out Accuracy: {metrics['holdout_accuracy']:.3f}")
     print("\nClassification Report:\n", metrics["classification_report"])
-    

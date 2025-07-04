@@ -1,18 +1,28 @@
 import os
 import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import traceback
+from datetime import datetime
 
 from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
 from dotenv import load_dotenv
 
+# Project imports
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.config import (
-    MODEL_PATH, TECHNICAL_SKILLS, PERSONALITY_TRAITS, CAREER_CATEGORIES, SECRET_KEY, DEBUG
+    MODEL_PATH,
+    TECHNICAL_SKILLS,
+    PERSONALITY_TRAITS,
+    CAREER_CATEGORIES,
+    SECRET_KEY,
+    DEBUG,
 )
 from src.predictor import CareerPredictor
 from src.utils import (
-    sanitize_form_data, validate_input, format_predictions, 
-    validate_model_predictions, prepare_features_from_form
+    sanitize_form_data,
+    validate_input,
+    format_predictions,
+    validate_model_predictions,
+    prepare_features_from_form,
 )
 from src.logging_config import setup_logging, get_logger
 
@@ -24,8 +34,8 @@ setup_logging()
 logger = get_logger('app')
 
 def ensure_directories():
-    """Ensure required directories exist"""
-    directories = ['models', 'data', 'logs', 'static/css', 'static/js']
+    """Ensure required directories exist."""
+    directories = ['models', 'data', 'logs', 'static/css', 'static/js', 'templates']
     for directory in directories:
         os.makedirs(directory, exist_ok=True)
     logger.info("Required directories ensured")
@@ -37,30 +47,34 @@ app = Flask(__name__)
 app.secret_key = SECRET_KEY
 app.config['DEBUG'] = DEBUG
 
+# Inject global template variables
+@app.context_processor
+def inject_globals():
+    return dict(
+        technical_skills=TECHNICAL_SKILLS,
+        personality_traits=PERSONALITY_TRAITS
+    )
+
 # Initialize predictor
 predictor = CareerPredictor()
 
-# Model initialization (Flask 3.x compatible)
+# Model initialization
 try:
     if predictor.load_model():
         logger.info("Model loaded successfully during app initialization")
     else:
         logger.warning("Model could not be loaded during app initialization")
 except Exception as e:
-    logger.error(f"Error during model initialization: {str(e)}")
+    logger.error(f"Error during model initialization: {e}")
 
 @app.route('/')
 def index():
     """Render the main prediction form."""
     try:
         logger.info("Rendering index page")
-        return render_template(
-            'index.html', 
-            technical_skills=TECHNICAL_SKILLS,
-            personality_traits=PERSONALITY_TRAITS
-        )
+        return render_template('index.html')
     except Exception as e:
-        logger.error(f"Error rendering index page: {str(e)}")
+        logger.error(f"Error rendering index page: {e}")
         return render_template('error.html', error="Page could not be loaded"), 500
 
 @app.route('/predict', methods=['POST'])
@@ -86,14 +100,14 @@ def predict():
 
         logger.info(f"Prediction successful: {formatted_result['primary_career']}")
         return render_template(
-            'result.html', 
+            'result.html',
             prediction=formatted_result,
             form_data=form_data
         )
     except Exception as e:
-        logger.error(f"Prediction error: {str(e)}")
+        logger.error(f"Prediction error: {e}")
         logger.error(traceback.format_exc())
-        flash(f'An error occurred during prediction: {str(e)}', 'error')
+        flash(f'An error occurred during prediction: {e}', 'error')
         return redirect(url_for('index'))
 
 @app.route('/api/predict', methods=['POST'])
@@ -123,13 +137,13 @@ def api_predict():
         return jsonify({
             'success': True,
             'prediction': formatted_result
-        })
+        }), 200
     except Exception as e:
-        logger.error(f"API prediction error: {str(e)}")
+        logger.error(f"API prediction error: {e}")
         logger.error(traceback.format_exc())
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': 'Internal server error'
         }), 500
 
 @app.route('/health')
@@ -137,13 +151,15 @@ def health_check():
     """Health check endpoint."""
     try:
         model_info = predictor.get_model_info()
+        now = datetime.now().isoformat()
         return jsonify({
             'status': 'healthy',
             'model_status': model_info.get('status', 'unknown'),
-            'timestamp': model_info.get('timestamp', 'unknown')
+            'model_loaded_at': model_info.get('loaded_at', 'unknown'),
+            'timestamp': now
         })
     except Exception as e:
-        logger.error(f"Health check failed: {str(e)}")
+        logger.error(f"Health check failed: {e}")
         return jsonify({
             'status': 'unhealthy',
             'error': str(e)
@@ -156,7 +172,7 @@ def model_info():
         info = predictor.get_model_info()
         return jsonify(info)
     except Exception as e:
-        logger.error(f"Error getting model info: {str(e)}")
+        logger.error(f"Error getting model info: {e}")
         return jsonify({'error': str(e)}), 500
 
 @app.errorhandler(404)
@@ -168,7 +184,7 @@ def not_found(error):
 @app.errorhandler(500)
 def internal_error(error):
     """Handle 500 errors."""
-    logger.error(f"500 error: {str(error)}")
+    logger.error(f"500 error: {error}")
     return render_template('error.html', error="Internal server error"), 500
 
 if __name__ == '__main__':
