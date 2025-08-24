@@ -1,4 +1,4 @@
-# ML Project Career Prediction System
+# ML Project - Career Prediction System
 
 A comprehensive machine learning-based career prediction system that analyzes technical skills and personality traits to recommend suitable career paths.
 

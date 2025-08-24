@@ -6,7 +6,6 @@ from datetime import datetime
 from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
 from dotenv import load_dotenv
 
-# Project imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.config import (
     MODEL_PATH,
